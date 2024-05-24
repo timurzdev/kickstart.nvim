@@ -119,6 +119,10 @@ vim.keymap.set('n', '<C-s>', ':w<cr>', { desc = 'Saving file' })
 -- Explorer
 vim.keymap.set('n', '<leader>n', ':Explore<cr>')
 
+-- Cnext/Cprev
+vim.keymap.set('n', ']c', ':cnext<cr>')
+vim.keymap.set('n', '[c', ':cprev<cr>')
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -267,6 +271,8 @@ require('lazy').setup({
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      -- Dir
+      { 'princejoogie/dir-telescope.nvim' },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -304,12 +310,20 @@ require('lazy').setup({
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
+          ['dir'] = {
+            require('dir-telescope').setup {
+              hidden = true,
+              no_ignore = false,
+              show_preview = true,
+            },
+          },
         },
       }
 
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'dir')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -324,6 +338,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>fd', '<cmd>Telescope dir live_grep<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', '<leader>pd', '<cmd>Telescope dir find_files<CR>', { noremap = true, silent = true })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -513,7 +529,7 @@ require('lazy').setup({
           },
         },
         -- brief = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
