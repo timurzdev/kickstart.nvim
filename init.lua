@@ -568,14 +568,26 @@ require('lazy').setup({
 
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
-      local ensure_installed = vim.tbl_keys(servers or {})
+      local ensure_installed = vim.tbl_keys {}
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'gopls',
-        'sqls',
+        'pyright',
         'yamlfmt',
+        'yamlls',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+      local lspconfigTmp = require 'lspconfig'
+      lspconfigTmp.postgres_lsp.setup {
+        default_config = {
+          name = 'postgres_lsp',
+          cmd = { 'postgres_lsp' },
+          filetypes = { 'sql' },
+          single_file_support = true,
+          root_dir = util.root_pattern 'root_file.txt',
+        },
+      }
 
       require('mason-lspconfig').setup {
         handlers = {
@@ -594,6 +606,7 @@ require('lazy').setup({
           -- end,
         },
       }
+
       -- local lsp = require 'lspconfig'
       -- capabilities = vim.tbl_deep_extend('keep', lsp, {
       --   lsp_name = {
