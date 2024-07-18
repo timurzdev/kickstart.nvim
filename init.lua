@@ -504,14 +504,7 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       --
       local util = require 'lspconfig.util'
-      -- local custom_servers = {
-      --   brief = {
-      --     cmd = { 'brief' },
-      --     filetypes = { 'brief' },
-      --   },
-      -- }
       local servers = {
-        -- clangd = {},
         gopls = {
           cmd = { 'gopls' },
           filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
@@ -530,16 +523,9 @@ require('lazy').setup({
             },
           },
         },
-        -- brief = {},
         pyright = {},
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
         --
         yamlls = {},
 
@@ -579,15 +565,48 @@ require('lazy').setup({
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
-      local lspconfigTmp = require 'lspconfig'
-      lspconfigTmp.postgres_lsp.setup {
+      local lspconfigCustom = require 'lspconfig'
+      lspconfigCustom.postgres_lsp.setup {
         default_config = {
           name = 'postgres_lsp',
           cmd = { 'postgres_lsp' },
           filetypes = { 'sql' },
           single_file_support = true,
-          root_dir = util.root_pattern 'root_file.txt',
+          root_dir = util.root_pattern 'go.mod',
         },
+      }
+
+      local nvim_lsp = require 'lspconfig'
+      local configs = require 'lspconfig.configs'
+
+      -- Inject Brief LSP
+      if not configs.briefls then
+        configs.briefls = {
+          default_config = {
+            cmd = { 'briefls' },
+            filetypes = { 'brief' },
+            root_dir = function(fname)
+              return util.root_pattern '.git'(fname)
+            end,
+            single_file_support = true,
+            capabilities = {
+              workspace = {
+                didChangeWatchedFiles = {
+                  dynamicRegistration = true,
+                },
+              },
+            },
+          },
+          settings = {},
+        }
+      end
+
+      -- Setup server
+      nvim_lsp.briefls.setup {
+        flags = {
+          debounce_text_changes = 150,
+        },
+        capabilities = capabilities,
       }
 
       require('mason-lspconfig').setup {
@@ -600,22 +619,8 @@ require('lazy').setup({
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
-          -- function(custom_name)
-          --   local server = custom_servers[custom_name] or {}
-          --   server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          --   require('lspconfig')[custom_name].setup(server)
-          -- end,
         },
       }
-
-      -- local lsp = require 'lspconfig'
-      -- capabilities = vim.tbl_deep_extend('keep', lsp, {
-      --   lsp_name = {
-      --     cmd = { 'brief' },
-      --     filetypes = 'brief',
-      --     name = 'brief-lsp',
-      --   },
-      -- })
     end,
   },
 
