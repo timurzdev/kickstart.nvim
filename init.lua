@@ -1,3 +1,4 @@
+-- require './lua/custom/syntax'
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -413,6 +414,22 @@ require('lazy').setup({
       --    That is to say, every time a new file is opened that is associated with
       --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
       --    function will be executed to configure the current buffer
+      --
+      --
+      local ftGroup = vim.api.nvim_create_augroup('filetype_group', { clear = true })
+
+      vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
+        pattern = { '*.brief' },
+        command = 'set filetype=brief',
+        group = ftGroup,
+      })
+
+      vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
+        pattern = { '*.brief' },
+        command = 'source ~/.config/nvim/lua/custom/syntax/brief.vim',
+        group = ftGroup,
+      })
+
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
