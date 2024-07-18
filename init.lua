@@ -518,6 +518,7 @@ require('lazy').setup({
           root_dir = util.root_pattern('go.work', 'go.mod', '.git'),
           settings = {
             gopls = {
+              buildFlags = { '-tags=integration' },
               completeUnimported = true,
               usePlaceholders = true,
               analyses = {
@@ -746,7 +747,6 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
-          { name = 'supermaven' },
         },
       }
     end,
@@ -841,12 +841,6 @@ require('lazy').setup({
       --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
       --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-    end,
-  },
-  {
-    'supermaven-inc/supermaven-nvim',
-    config = function()
-      require('supermaven-nvim').setup {}
     end,
   },
 
