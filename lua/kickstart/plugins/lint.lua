@@ -34,13 +34,14 @@ return {
       -- lint.linters_by_ft['dockerfile'] = nil
       -- lint.linters_by_ft['inko'] = nil
       -- lint.linters_by_ft['janet'] = nil
-      -- lint.linters_by_ft['json'] = nil
-      -- lint.linters_by_ft['markdown'] = nil
+      lint.linters_by_ft['json'] = 'jsonlint'
+      lint.linters_by_ft['markdown'] = 'vale'
       -- lint.linters_by_ft['rst'] = nil
       -- lint.linters_by_ft['ruby'] = nil
       -- lint.linters_by_ft['terraform'] = nil
-      -- lint.linters_by_ft['text'] = nil
+      lint.linters_by_ft['text'] = 'vale'
 
+      require('mason-tool-installer').setup { ensure_installed = vim.tbl_values(lint.linters_by_ft) }
       -- Create autocommand which carries out the actual linting
       -- on the specified events.
       local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
