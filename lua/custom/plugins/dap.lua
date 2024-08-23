@@ -11,6 +11,7 @@ return {
     config = function()
       local dap = require 'dap'
       local ui = require 'dapui'
+      local dap_go = require 'dap-go'
 
       require('dapui').setup()
       require('dap-go').setup()
@@ -33,14 +34,6 @@ return {
       }
 
       -- Handled by nvim-dap-go
-      dap.adapters.go = {
-        type = 'server',
-        port = '${port}',
-        executable = {
-          command = 'dlv',
-          args = { 'dap', '-l', '127.0.0.1:${port}' },
-        },
-      }
 
       vim.keymap.set('n', '<space>b', dap.toggle_breakpoint)
       vim.keymap.set('n', '<space>gb', dap.run_to_cursor)
@@ -58,6 +51,10 @@ return {
       vim.keymap.set('n', '<F12>', dap.restart)
 
       vim.keymap.set('n', '<F7>', ui.toggle)
+
+      -- nvim-dap
+      vim.keymap.set('n', '<leader>DT', dap_go.debug_test)
+      vim.keymap.set('n', '<leader>DL', dap_go.debug_last_test)
 
       vim.api.nvim_create_autocmd('ColorScheme', {
         pattern = '*',
