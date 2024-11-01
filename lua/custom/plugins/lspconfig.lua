@@ -191,6 +191,7 @@ return { -- LSP Configuration & Plugins
       'pyright',
       'yamlfmt',
       'yamlls',
+      'clangd',
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 

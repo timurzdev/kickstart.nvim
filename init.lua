@@ -30,7 +30,6 @@ require('lazy').setup({
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   require 'kickstart.plugins.indent_line',
-  require 'kickstart.plugins.lint',
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
